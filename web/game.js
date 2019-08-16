@@ -1,11 +1,5 @@
 "use strict";
 
-var wssurl = "wss://" + location.host + '/websocket/';
-var wsurl = "ws://" + location.host + '/websocket/';
-if (location.protocol == 'file:') {
-    var wsurl = "ws://localhost:8080/websocket/";
-}
-
 const dpi = window.devicePixelRatio || 1;
 const canvasWidth = 800;
 const canvasHeight = 540;
@@ -21,6 +15,7 @@ ctx.scale(dpi, dpi);
 
 canvas.setAttribute('tabindex', 1);
 canvas.setAttribute('id', 'game-canvas');
+
 canvas.addEventListener('keydown', function(event) {
     if (event.key == 'F5') {
         location.reload();
@@ -38,11 +33,14 @@ var bodycolor = 'lightred';
 var bgcolor = 'white';
 var offset = 20;
 
-if (location.protocol == 'http:' || location.protocol == 'file:') {
-    var ws = new WebSocket(wsurl);
-} else {
-    var ws = new WebSocket(wssurl);
-};
+var wsurl = `wss://${location.host}/websocket/`;
+if (location.protocol == "file:") {
+    wsurl = "ws://localhost:8080/websocket/";
+}
+if (location.protocol == "http:") {
+    wsurl = `ws://${location.host}/websocket/`;
+}
+var ws = new WebSocket(wsurl);
 
 ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
